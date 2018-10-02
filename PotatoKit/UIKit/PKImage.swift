@@ -42,6 +42,17 @@ extension UIImage {
         let scale = UIScreen.main.scale
         return UIImage(ciImage: output.imageScaledToSize(size: length * scale) , scale: scale, orientation: UIImage.Orientation.up)
     }
+    
+    /// 获取qrcode 的链接
+    ///
+    /// - Returns: 如果有内容 会生成一个字符串 如果不存在字符串就返回nil
+    public func qrcodeInformation() -> String? {
+        guard let dector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh]), let ciImage = CIImage(image: self) else { return nil }
+        
+        let features = dector.features(in: ciImage)
+        guard let qrcodes = features as? [CIQRCodeFeature], features.count > 0 else { return nil }
+        return qrcodes[0].messageString
+    }
 }
 
 

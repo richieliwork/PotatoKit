@@ -19,8 +19,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let image1 = UIImageView(image: UIImage(named: "invite_mimi"))
         self.view.addSubview(image1)
-        
-        let image = UIImageView(image: UIImage.imageFromURL(url: "https://www.baidu.com", size: 131))
+
+        let image = UIImageView(image: UIImage.imageFromURL(url: "https://www.baidu.com\nhttps://www.126.com", size: 131))
         image.translatesAutoresizingMaskIntoConstraints = false
         image1.addSubview(image)
         
@@ -31,12 +31,17 @@ class ViewController: UIViewController {
     }
 
     @objc func saveImage() -> Void {
-        guard let image = self.image.saveContentAsImage() else {
-            print("error")
-            return
-        }
         
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        
+        let imagePick = UIImagePickerController()
+        imagePick.delegate = self
+        imagePick.sourceType = .savedPhotosAlbum
+        present(imagePick, animated: true, completion: nil)
+        
+        
+        
+        
+//        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
@@ -54,3 +59,23 @@ class ViewController: UIViewController {
 
 }
 
+
+
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("cancel")
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        
+        
+        print(info[UIImagePickerController.InfoKey.mediaType])
+        picker.dismiss(animated: true) {
+            print(image.qrcodeInformation())
+        }
+        
+    }
+    
+}

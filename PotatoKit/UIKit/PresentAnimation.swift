@@ -17,7 +17,9 @@ class PresentAnimation: NSObject {
     }
 }
 
+// MARK: - UIViewControllerAnimatedTransitioning
 extension PresentAnimation : UIViewControllerAnimatedTransitioning {
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 2
     }
